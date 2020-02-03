@@ -95,6 +95,7 @@ object JobStream {
             .keyBy(_.gender)
             .timeWindow(Time.minutes(1))
             .apply { (key: String, tw: TimeWindow, list: Iterable[PageViewSum], out: Collector[PageViewSum]) =>
+                // could be replaced with an window function implementation to store less state
                 val top10 = list.toSeq.sortBy(_.sumTimes).takeRight(10)
                 top10.foreach(out.collect)
             }
